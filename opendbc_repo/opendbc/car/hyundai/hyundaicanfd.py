@@ -132,7 +132,7 @@ def create_buttons(packer, CP, CAN, cnt, btn, cruise_btn_info_copy, regen = None
         "LEFT_PADDLE": l_pad,
       })
 
-  bus = CAN.ECAN if CP.flags & HyundaiFlags.CANFD_HDA2 else CAN.CAM
+  bus = CAN.ACAN if CP.flags & HyundaiFlags.CANFD_HDA2 else CAN.CAM
   return packer.make_can_msg("CRUISE_BUTTONS", bus, values)
 
 def create_acc_cancel(packer, CP, CAN, cruise_info_copy):
