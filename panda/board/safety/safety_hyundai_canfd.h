@@ -215,7 +215,7 @@ static bool hyundai_canfd_tx_hook(const CANPacket_t *to_send) {
 static int hyundai_canfd_fwd_hook(int bus_num, int addr) {
   int bus_fwd = -1;
 
-  if (bus_num == 0) {
+  if (bus_num == 1) {
     bus_fwd = 2;
   }
   if (bus_num == 2) {
@@ -232,7 +232,7 @@ static int hyundai_canfd_fwd_hook(int bus_num, int addr) {
 
     bool block_msg = is_lkas_msg || is_lfa_msg || is_lfahda_msg || is_scc_msg;
     if (!block_msg) {
-      bus_fwd = 0;
+      bus_fwd = 1;
     }
   }
 
@@ -245,7 +245,7 @@ static safety_config hyundai_canfd_init(uint16_t param) {
   const int HYUNDAI_PARAM_CANFD_LFA_ENG = 64;
 
   static const CanMsg HYUNDAI_CANFD_HDA2_TX_MSGS[] = {
-    {0x50, 0, 16}, {0x50, 1, 16}, // LKAS
+    {0x50, 0, 16},  // LKAS
     {0x1CF, 1, 8},  // CRUISE_BUTTON
     {0x2A4, 0, 24}, // CAM_0x2A4
   };
