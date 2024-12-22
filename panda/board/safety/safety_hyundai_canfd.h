@@ -245,7 +245,7 @@ static safety_config hyundai_canfd_init(uint16_t param) {
   const int HYUNDAI_PARAM_CANFD_LFA_ENG = 64;
 
   static const CanMsg HYUNDAI_CANFD_HDA2_TX_MSGS[] = {
-    {0x50, 0, 16},  // LKAS
+    {0x50, 0, 16}, {0x50, 1, 16}, // LKAS
     {0x1CF, 1, 8},  // CRUISE_BUTTON
     {0x2A4, 0, 24}, // CAM_0x2A4
   };
