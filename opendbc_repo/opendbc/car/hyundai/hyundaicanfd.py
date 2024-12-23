@@ -78,7 +78,7 @@ def create_steering_messages(packer, CP, CAN, enabled, lat_active, steering_pres
     hda2_lkas_msg = "LKAS_ALT" if CP.flags & HyundaiFlags.CANFD_HDA2_ALT_STEERING else "LKAS"
     if CP.openpilotLongitudinalControl:
       ret.append(packer.make_can_msg("LFA", CAN.ECAN, values))
-    ret.append(packer.make_can_msg(hda2_lkas_msg, CAN.ECAN, values))
+    ret.append(packer.make_can_msg(hda2_lkas_msg, CAN.ACAN, values))
   else:
     ret.append(packer.make_can_msg("LFA", CAN.ECAN, values))
 
@@ -101,7 +101,7 @@ def create_suppress_lfa(packer, CAN, hda2_lfa_block_msg, hda2_alt_steering, enab
   values["SET_ME_0_2"] = 0
   values["LEFT_LANE_LINE"] = 0 if enabled else 3
   values["RIGHT_LANE_LINE"] = 0 if enabled else 3
-  return packer.make_can_msg(suppress_msg, CAN.ECAN, values)
+  return packer.make_can_msg(suppress_msg, CAN.ACAN, values)
 
 def create_buttons(packer, CP, CAN, cnt, btn, cruise_btn_info_copy, regen = None, r_pad = None, l_pad = None):
   values = {s: cruise_btn_info_copy[s] for s in [
@@ -132,7 +132,7 @@ def create_buttons(packer, CP, CAN, cnt, btn, cruise_btn_info_copy, regen = None
         "LEFT_PADDLE": l_pad,
       })
 
-  bus = CAN.ACAN if CP.flags & HyundaiFlags.CANFD_HDA2 else CAN.CAM
+  bus = CAN.ECAN if CP.flags & HyundaiFlags.CANFD_HDA2 else CAN.CAM
   return packer.make_can_msg("CRUISE_BUTTONS", bus, values)
 
 def create_acc_cancel(packer, CP, CAN, cruise_info_copy):
