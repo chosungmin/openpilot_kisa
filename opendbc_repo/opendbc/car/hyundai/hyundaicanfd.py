@@ -86,9 +86,12 @@ def create_steering_messages(packer, CP, CAN, enabled, lat_active, steering_pres
 
 def create_suppress_lfa(packer, CAN, hda2_lfa_block_msg, hda2_alt_steering, enabled, lfa_cnt):
   suppress_msg = "CAM_0x362" if hda2_alt_steering else "CAM_0x2a4"
-  msg_bytes = 32 if hda2_alt_steering else 24
 
-  values = {f"BYTE{i}": hda2_lfa_block_msg[f"BYTE{i}"] for i in range(9, msg_bytes)}
+  # msg_bytes = 32 if hda2_alt_steering else 24
+  # values = {f"BYTE{i}": hda2_lfa_block_msg[f"BYTE{i}"] for i in range(9, msg_bytes)}
+
+  values = hda2_lfa_block_msg
+  
   values["LEFT_LANE_LINE_PROB"] = hda2_lfa_block_msg["LEFT_LANE_LINE_PROB"] # maybe double lane above 20
   values["RIGHT_LANE_LINE_PROB"] = hda2_lfa_block_msg["RIGHT_LANE_LINE_PROB"] # maybe double lane above 20
   values["LEFT_LANE_TYPE"] = hda2_lfa_block_msg["LEFT_LANE_TYPE"]
@@ -97,40 +100,34 @@ def create_suppress_lfa(packer, CAN, hda2_lfa_block_msg, hda2_alt_steering, enab
   values["RIGHT_LANE_COLOR"] = hda2_lfa_block_msg["RIGHT_LANE_COLOR"]
   values["LEFT_GUARD"] = hda2_lfa_block_msg["LEFT_GUARD"]
   values["RIGHT_GUARD"] = hda2_lfa_block_msg["RIGHT_GUARD"]
+  values["LEFT_BLOCKED"] = hda2_lfa_block_msg["LEFT_BLOCKED"]
+  values["RIGHT_BLOCKED"] = hda2_lfa_block_msg["RIGHT_BLOCKED"]
+  values["DISTANCE_1"] = hda2_lfa_block_msg["DISTANCE_1"]
+  values["DISTANCE_2"] = hda2_lfa_block_msg["DISTANCE_2"]
+  values["DISTANCE_3"] = hda2_lfa_block_msg["DISTANCE_3"]
+  values["DISTANCE_4"] = hda2_lfa_block_msg["DISTANCE_4"]
+  values["DISTANCE_5"] = hda2_lfa_block_msg["DISTANCE_5"]
+  values["DISTANCE_6"] = hda2_lfa_block_msg["DISTANCE_6"]
+  values["DISTANCE_7"] = hda2_lfa_block_msg["DISTANCE_7"]
+  values["DISTANCE_8"] = hda2_lfa_block_msg["DISTANCE_8"]
   values["SET_ME_0"] = 0
   values["SET_ME_0_2"] = 0
   values["LEFT_LANE_LINE"] = 0 if enabled else 3
   values["RIGHT_LANE_LINE"] = 0 if enabled else 3
   return packer.make_can_msg(suppress_msg, CAN.ACAN, values)
 
-def create_buttons(packer, CP, CAN, cnt, btn, cruise_btn_info_copy, regen = None, r_pad = None, l_pad = None):
-  values = {s: cruise_btn_info_copy[s] for s in [
-    "_CHECKSUM",
-    "COUNTER",
-    "CRUISE_BUTTONS",
-    "ADAPTIVE_CRUISE_MAIN_BTN",
-    "NORMAL_CRUISE_MAIN_BTN",
-    "LFA_BTN",
-    "RIGHT_PADDLE",
-    "LEFT_PADDLE",
-    "SET_ME_1",
-  ]}
-
-  values.update({
+def create_buttons(packer, CP, CAN, cnt, btn, regen = None, r_pad = None, l_pad = None):
+  values = {
     "COUNTER": cnt,
-    "CRUISE_BUTTONS": btn,
     "SET_ME_1": 1,
-  })
+    "CRUISE_BUTTONS": btn,
+  }
 
   if regen:
     if r_pad:
-      values.update({
-        "RIGHT_PADDLE": r_pad,
-      })
+      values["RIGHT_PADDLE"] = r_pad
     if l_pad:
-      values.update({
-        "LEFT_PADDLE": l_pad,
-      })
+      values["LEFT_PADDLE"] = l_pad
 
   bus = CAN.ECAN if CP.flags & HyundaiFlags.CANFD_HDA2 else CAN.CAM
   return packer.make_can_msg("CRUISE_BUTTONS", bus, values)
