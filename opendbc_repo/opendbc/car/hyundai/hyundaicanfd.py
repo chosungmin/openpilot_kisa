@@ -68,9 +68,9 @@ def create_steering_messages(packer, CP, CAN, enabled, lat_active, steering_pres
       "TORQUE_REQUEST": apply_steer,
       "LKA_ASSIST": 0, # 핸들 파지 요청 메시지
       "STEER_REQ": 1 if lat_active else 0,
-      "STEER_ACT": 131 if lat_active else 100, # 핸들 토크에 관한것 같음
+      "STEER_ACT": 255 if lat_active else 100, # 핸들 토크에 관한것 같음
       "HAS_LANE_SAFETY": 0,  # hide LKAS settings
-      "NEW_SIGNAL_1": 3 if lat_active else 0, #인게이지 되면 3임
+      "NEW_SIGNAL_1": 0,
       "NEW_SIGNAL_3": 0,
       "NEW_SIGNAL_4": 0,
     }
