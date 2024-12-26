@@ -31,7 +31,6 @@ class CarInterface(CarInterfaceBase):
     CAN = CanBus(None, fingerprint, hda2)
 
     params = Params()
-    hda2 = True
 
     if ret.flags & HyundaiFlags.CANFD:
       # Shared configuration for CAN-FD cars
