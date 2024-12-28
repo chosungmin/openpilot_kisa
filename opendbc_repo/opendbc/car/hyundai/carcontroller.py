@@ -69,6 +69,7 @@ class CarController(CarControllerBase):
     self.apply_angle_last = 0
     self.lkas_max_torque = 0
 
+    self.lkas11_cnt = 0
     self.scc12_cnt = 0
     self.aq_value = 0
     self.aq_value_raw = 0
@@ -725,10 +726,14 @@ class CarController(CarControllerBase):
     else:
       clu11_speed = CS.clu11["CF_Clu_Vanz"]
 
+      if self.frame == 0: # initialize counts from last received count signals
+        self.lkas11_cnt = CS.lkas11["CF_Lkas_MsgCount"] + 1
+      self.lkas11_cnt %= 0x10
+
       can_sends.append(hyundaican.create_lkas11(self.packer, self.frame, self.CP, apply_steer, lat_active and not self.lkas_temp_disabled,
                                                 torque_fault, CS.lkas11, sys_warning, sys_state, CC.enabled,
                                                 hud_control.leftLaneVisible, hud_control.rightLaneVisible,
-                                                left_lane_warning, right_lane_warning, 0, self.ldws_fix))
+                                                left_lane_warning, right_lane_warning, 0, self.ldws_fix, self.lkas11_cnt))
 
       if CS.out.cruiseState.standstill:
         self.standstill_status = True
@@ -1392,6 +1397,7 @@ class CarController(CarControllerBase):
     new_actuators.standStill = True if CS.out.cruiseState.standstill or (self.standstill_status or self.standstill_status_canfd) else False
 
     self.frame += 1
+    self.lkas11_cnt += 1
     return new_actuators, can_sends
 
   def create_button_messages(self, CC: structs.CarControl, CS: CarState, use_clu11: bool):
