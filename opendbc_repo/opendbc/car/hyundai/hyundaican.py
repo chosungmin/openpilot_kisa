@@ -31,7 +31,7 @@ def create_lkas11(packer, frame, CP, apply_steer, steer_req,
   values["CR_Lkas_StrToqReq"] = apply_steer
   values["CF_Lkas_ActToi"] = steer_req and not (torque_fault and (True if CP.carFingerprint in LEGACY_SAFETY_MODE_CAR_ALT2 else False))
   values["CF_Lkas_ToiFlt"] = torque_fault  # seems to allow actuation on CR_Lkas_StrToqReq
-  values["CF_Lkas_MsgCount"] = frame % 0x10
+  values["CF_Lkas_MsgCount"] = 0
 
   if CP.carFingerprint == CAR.HYUNDAI_GRANDEUR_HEV_IG:
     nSysWarnVal = 9
