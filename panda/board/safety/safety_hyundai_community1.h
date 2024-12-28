@@ -22,7 +22,7 @@
 
 extern const LongitudinalLimits HYUNDAI_COMMUNITY1_LONG_LIMITS;
 const LongitudinalLimits HYUNDAI_COMMUNITY1_LONG_LIMITS = {
-  .max_accel = 200,   // 1/100 m/s2
+  .max_accel = 250,   // 1/100 m/s2
   .min_accel = -400,  // 1/100 m/s2
 };
 
