@@ -29,25 +29,25 @@ MAX_ANGLE_CONSECUTIVE_FRAMES = 2
 
 
 def process_hud_alert(enabled, fingerprint, hud_control):
-  sys_warning = 0
+  sys_warning = (hud_control.visualAlert in (VisualAlert.steerRequired, VisualAlert.ldw))
 
   # initialize to no line visible
   # TODO: this is not accurate for all cars
   sys_state = 1
-  # if hud_control.leftLaneVisible and hud_control.rightLaneVisible or sys_warning:  # HUD alert only display when LKAS status is active
-  #   sys_state = 3 if enabled or sys_warning else 4
-  # elif hud_control.leftLaneVisible:
-  #   sys_state = 5
-  # elif hud_control.rightLaneVisible:
-  #   sys_state = 6
+  if hud_control.leftLaneVisible and hud_control.rightLaneVisible or sys_warning:  # HUD alert only display when LKAS status is active
+    sys_state = 3 if enabled or sys_warning else 4
+  elif hud_control.leftLaneVisible:
+    sys_state = 5
+  elif hud_control.rightLaneVisible:
+    sys_state = 6
 
   # initialize to no warnings
   left_lane_warning = 0
   right_lane_warning = 0
-  # if hud_control.leftLaneDepart:
-  #   left_lane_warning = 1 if fingerprint in (CAR.GENESIS_DH, CAR.GENESIS_G90, CAR.GENESIS_G80) else 2
-  # if hud_control.rightLaneDepart:
-  #   right_lane_warning = 1 if fingerprint in (CAR.GENESIS_DH, CAR.GENESIS_G90, CAR.GENESIS_G80) else 2
+  if hud_control.leftLaneDepart:
+    left_lane_warning = 1 if fingerprint in (CAR.GENESIS_DH, CAR.GENESIS_G90, CAR.GENESIS_G80) else 2
+  if hud_control.rightLaneDepart:
+    right_lane_warning = 1 if fingerprint in (CAR.GENESIS_DH, CAR.GENESIS_G90, CAR.GENESIS_G80) else 2
 
   return sys_warning, sys_state, left_lane_warning, right_lane_warning
 
