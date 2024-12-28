@@ -6,8 +6,24 @@ hyundai_checksum = crcmod.mkCrcFun(0x11D, initCrc=0xFD, rev=False, xorOut=0xdf)
 def create_lkas11(packer, frame, CP, apply_steer, steer_req,
                   torque_fault, lkas11, sys_warning, sys_state, enabled,
                   left_lane, right_lane,
-                  left_lane_depart, right_lane_depart, bus, ldws, cnt):
-  values = lkas11
+                  left_lane_depart, right_lane_depart, bus, ldws):
+  values = {s: lkas11[s] for s in [
+    "CF_Lkas_LdwsActivemode",
+    "CF_Lkas_LdwsSysState",
+    "CF_Lkas_SysWarning",
+    "CF_Lkas_LdwsLHWarning",
+    "CF_Lkas_LdwsRHWarning",
+    "CF_Lkas_HbaLamp",
+    "CF_Lkas_FcwBasReq",
+    "CF_Lkas_HbaSysState",
+    "CF_Lkas_FcwOpt",
+    "CF_Lkas_HbaOpt",
+    "CF_Lkas_FcwSysState",
+    "CF_Lkas_FcwCollisionWarning",
+    "CF_Lkas_FusionState",
+    "CF_Lkas_FcwOpt_USM",
+    "CF_Lkas_LdwsOpt_USM",
+  ]}
   values["CF_Lkas_LdwsSysState"] = sys_state
   values["CF_Lkas_SysWarning"] = 3 if sys_warning else 0
   values["CF_Lkas_LdwsLHWarning"] = left_lane_depart
@@ -15,8 +31,7 @@ def create_lkas11(packer, frame, CP, apply_steer, steer_req,
   values["CR_Lkas_StrToqReq"] = apply_steer
   values["CF_Lkas_ActToi"] = steer_req and not (torque_fault and (True if CP.carFingerprint in LEGACY_SAFETY_MODE_CAR_ALT2 else False))
   values["CF_Lkas_ToiFlt"] = torque_fault  # seems to allow actuation on CR_Lkas_StrToqReq
-  values["CF_Lkas_MsgCount"] = cnt
-  values["CF_Lkas_Chksum"] = 0
+  values["CF_Lkas_MsgCount"] = 0
 
   if CP.carFingerprint == CAR.HYUNDAI_GRANDEUR_HEV_IG:
     nSysWarnVal = 9
